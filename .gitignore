@@ -1,0 +1,45 @@
+# Traefik ACME certificates
+traefik/acme/acme.json
+
+# Logs
+*.log
+traefik/logs/*
+
+# Portainer data
+traefik/portainer-data/*
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Secrets
+client_secret*.json
+*.pem
+*.key
+
+# Docker volumes
+*-data/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/.terraform.lock.hcl
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
