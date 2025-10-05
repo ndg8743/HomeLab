@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: unless-stopped
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+    ports:
+      - "80:80"
+      - "443:443"
+      # Dashboard - only enable if needed and secure it
+      # - "127.0.0.1:8080:8080"
+
+    environment:
+      - TRAEFIK_CERTIFICATESRESOLVERS_letsencrypt_ACME_EMAIL=ndg8743@gmail.com
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/config/traefik.yml:/traefik.yml:ro
+      - ./traefik/config/dynamic.yml:/dynamic.yml:ro
+      - ./traefik/acme:/acme
+      - ./traefik/logs:/var/log/traefik
+
+    labels:
+      - "traefik.enable=true"
+      # Dashboard (OPTIONAL - remove in production or secure with auth)
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.gopee.dev`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true

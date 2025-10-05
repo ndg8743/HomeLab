@@ -1,0 +1,107 @@
+http:
+  middlewares:
+    # Security Headers
+    security-headers:
+      headers:
+        customFrameOptionsValue: SAMEORIGIN
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+          Server: ""  # Hide server info
+          X-Powered-By: ""  # Hide powered by info
+
+    # Compression
+    compression:
+      compress: {}
+
+    # Rate Limiting - General Protection
+    rate-limit-general:
+      rateLimit:
+        average: 100  # 100 requests per second
+        period: 1s
+        burst: 50     # Allow burst of 50 extra requests
+
+    # Rate Limiting - Strict (for sensitive endpoints)
+    rate-limit-strict:
+      rateLimit:
+        average: 10   # 10 requests per second
+        period: 1s
+        burst: 5
+
+    # Rate Limiting - API endpoints
+    rate-limit-api:
+      rateLimit:
+        average: 30
+        period: 1s
+        burst: 10
+
+    # IP Whitelist (example - customize as needed)
+    # ip-whitelist:
+    #   ipWhiteList:
+    #     sourceRange:
+    #       - "127.0.0.1/32"
+    #       - "YOUR_TRUSTED_IP/32"
+
+    # Connection limiting
+    in-flight-req:
+      inFlightReq:
+        amount: 100  # Max 100 simultaneous connections
+
+    # Retry middleware
+    retry:
+      retry:
+        attempts: 3
+        initialInterval: 100ms
+
+    # Circuit breaker - stops forwarding requests if backend is failing
+    circuit-breaker:
+      circuitBreaker:
+        expression: "NetworkErrorRatio() > 0.30 || ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+        checkPeriod: 10s
+        fallbackDuration: 30s
+        recoveryDuration: 10s
+
+    # Geo-blocking (optional - block specific countries)
+    # Requires GeoIP2 database
+    # geo-block:
+    #   plugin:
+    #     geoblock:
+    #       allowedCountries:
+    #         - US
+    #         - CA
+    #         - GB
+    #       blackListMode: false
+
+    # Advanced DDoS protection - slow loris protection
+    slow-loris-protection:
+      buffering:
+        maxRequestBodyBytes: 10485760  # 10MB max request size
+        memRequestBodyBytes: 2097152   # 2MB in memory
+        maxResponseBodyBytes: 10485760 # 10MB max response
+        memResponseBodyBytes: 2097152  # 2MB in memory
+        retryExpression: "IsNetworkError() && Attempts() < 3"
+
+    # Bot protection - basic bot filtering
+    bot-protection:
+      headers:
+        customRequestHeaders:
+          X-Bot-Protection: "enabled"
+        customResponseHeaders:
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "DENY"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+
+  # TLS Options
+  serversTransports:
+    default:
+      serverName: ""
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
