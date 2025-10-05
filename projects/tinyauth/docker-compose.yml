@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  tinyauth:
+    container_name: tinyauth
+    image: ghcr.io/steveiliop56/tinyauth:v3
+    restart: unless-stopped
+
+    security_opt:
+      - no-new-privileges:true
+
+    command:
+      - --app-url=https://auth.gopee.dev
+      - --secret=CHANGE_ME_TINYAUTH_SECRET
+      - --google-client-id=CHANGE_ME_GOOGLE_CLIENT_ID
+      - --google-client-secret=CHANGE_ME_GOOGLE_CLIENT_SECRET
+      - --cookie-secure=true
+
+    volumes:
+      - tinyauth_data:/data
+
+    networks:
+      - traefik-public
+
+    labels:
+      - "traefik.enable=true"
+
+      # Router for TinyAuth UI
+      - "traefik.http.routers.tinyauth.rule=Host(`auth.gopee.dev`)"
+      - "traefik.http.routers.tinyauth.entrypoints=websecure"
+      - "traefik.http.routers.tinyauth.tls.certresolver=letsencrypt"
+      - "traefik.http.services.tinyauth.loadbalancer.server.port=3000"
+
+      # Apply security middlewares
+      - "traefik.http.routers.tinyauth.middlewares=security-headers@file,compression@file"
+
+      # ForwardAuth middleware definition
+      - "traefik.http.middlewares.tinyauth.forwardauth.address=http://tinyauth:3000/api/auth/traefik"
+      - "traefik.http.middlewares.tinyauth.forwardauth.authResponseHeaders=X-Forwarded-User"
+
+volumes:
+  tinyauth_data:
+
+networks:
+  traefik-public:
+    external: true
