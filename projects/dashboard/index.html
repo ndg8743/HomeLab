@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Dashboard - Gopee.dev</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0aec0;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-description {
+            color: #a0aec0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Specific color gradients for different services */
+        .portainer .service-icon {
+            background: linear-gradient(135deg, #13bef9 0%, #0f9bd6 100%);
+        }
+
+        .grafana .service-icon {
+            background: linear-gradient(135deg, #f46800 0%, #d64806 100%);
+        }
+
+        .prometheus .service-icon {
+            background: linear-gradient(135deg, #e6522c 0%, #c43d1f 100%);
+        }
+
+        .traefik .service-icon {
+            background: linear-gradient(135deg, #24a1c1 0%, #1b7e96 100%);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            header {
+                margin-bottom: 30px;
+                padding-top: 20px;
+            }
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            background: #48bb78;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(72, 187, 120, 0.5);
+            z-index: 2;
+        }
+
+        .status-indicator::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Services Dashboard</h1>
+            <p class="subtitle">Centralized access to all your services</p>
+        </header>
+
+        <div class="services-grid">
+            <!-- Portainer -->
+            <div class="service-card portainer">
+                <div class="status-indicator"></div>
+                <div class="service-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <h2 class="service-name">Portainer</h2>
+                <p class="service-description">Container management platform for Docker environments</p>
+                <a href="https://portainer.gopee.dev" class="service-button" target="_blank">
+                    <span>Access</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Grafana -->
+            <div class="service-card grafana">
+                <div class="status-indicator"></div>
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2 class="service-name">Grafana</h2>
+                <p class="service-description">Analytics and interactive visualization platform</p>
+                <a href="https://grafana.gopee.dev" class="service-button" target="_blank">
+                    <span>Access</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Prometheus -->
+            <div class="service-card prometheus">
+                <div class="status-indicator"></div>
+                <div class="service-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h2 class="service-name">Prometheus</h2>
+                <p class="service-description">Monitoring system and time series database</p>
+                <a href="https://prometheus.gopee.dev" class="service-button" target="_blank">
+                    <span>Access</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Traefik -->
+            <div class="service-card traefik">
+                <div class="status-indicator"></div>
+                <div class="service-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h2 class="service-name">Traefik Dashboard</h2>
+                <p class="service-description">Reverse proxy and load balancer management</p>
+                <a href="https://traefik.gopee.dev" class="service-button" target="_blank">
+                    <span>Access</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Gopee.dev - All services secured with HTTPS</p>
+        </footer>
+    </div>
+</body>
+</html>
