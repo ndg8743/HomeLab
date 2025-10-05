@@ -1,0 +1,53 @@
+# Example Terraform Variables Configuration
+# Copy this file to terraform.tfvars and customize for your environment
+# WARNING: Never commit terraform.tfvars to version control if it contains secrets
+
+# Primary Configuration
+domain      = "gopee.dev"
+email       = "ndg8743@gmail.com"
+environment = "production"
+
+# Network Configuration
+network_name = "traefik-public"
+
+# Docker Images
+traefik_image      = "traefik:v3.0"
+tinyauth_image     = "ghcr.io/steveiliop56/tinyauth:v3"
+portainer_image    = "portainer/portainer-ce:latest"
+personalsite_image = "personalsite:latest"
+prometheus_image   = "prom/prometheus:latest"
+grafana_image      = "grafana/grafana:latest"
+dashboard_image    = "dashboard:latest"
+
+# Traefik Configuration
+traefik_dashboard_enabled = true
+traefik_log_level        = "INFO"  # DEBUG, INFO, WARN, ERROR
+traefik_memory_limit     = 512     # MB
+
+# TinyAuth Configuration (REQUIRED)
+tinyauth_memory_limit = 256  # MB
+tinyauth_secret       = "CHANGE_THIS_32_CHARACTER_SECRET!"  # Must be exactly 32 characters
+google_client_id      = "your-client-id.apps.googleusercontent.com"
+google_client_secret  = "your-client-secret"
+
+# Portainer Configuration
+portainer_memory_limit = 256  # MB
+
+# PersonalSite Configuration
+personalsite_memory_limit = 256  # MB
+
+# Monitoring Configuration
+prometheus_memory_limit = 512  # MB
+prometheus_config_path  = "/root/traefik-setup/projects/monitoring/prometheus.yml"
+grafana_memory_limit    = 512  # MB
+grafana_admin_password  = "CHANGE_THIS_SECURE_PASSWORD"
+
+# Dashboard Configuration
+dashboard_memory_limit  = 256  # MB
+dashboard_build_context = "/root/traefik-setup/projects/dashboard"
+
+# File Paths (adjust if your setup is different)
+acme_storage_path    = "/root/traefik-setup/traefik/acme"
+traefik_config_path  = "/root/traefik-setup/traefik/config"
+traefik_logs_path    = "/root/traefik-setup/traefik/logs"
+portainer_data_path  = "/root/traefik-setup/traefik/portainer-data"
