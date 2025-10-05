@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Replace 'myapp' with your application name
+  myapp:
+    image: myapp:latest
+    # OR build from source:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: myapp
+    restart: unless-stopped
+
+    # Environment variables
+    environment:
+      - NODE_ENV=production
+      # Add your env vars here
+
+    # Volumes (if needed)
+    # volumes:
+    #   - ./data:/app/data
+
+    networks:
+      - traefik-public
+      # Add internal network if needed for database, etc.
+      # - internal
+
+    labels:
+      - "traefik.enable=true"
+
+      # HTTP Router
+      - "traefik.http.routers.myapp.rule=Host(`myapp.gopee.dev`)"
+      - "traefik.http.routers.myapp.entrypoints=websecure"
+      - "traefik.http.routers.myapp.tls.certresolver=letsencrypt"
+
+      # Service (specify the internal port your app listens on)
+      - "traefik.http.services.myapp.loadbalancer.server.port=3000"
+
+      # Apply security middlewares
+      - "traefik.http.routers.myapp.middlewares=security-headers@file,compression@file"
+
+networks:
+  traefik-public:
+    external: true
+  # internal:
+  #   internal: true
