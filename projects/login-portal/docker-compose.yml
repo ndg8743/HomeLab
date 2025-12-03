@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  login-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: login-portal
+    restart: unless-stopped
+
+    security_opt:
+      - no-new-privileges:true
+
+    networks:
+      - traefik-public
+
+    labels:
+      - "traefik.enable=true"
+
+      # HTTPS Router for /login path
+      - "traefik.http.routers.login-portal.rule=Host(`gopee.dev`) && PathPrefix(`/login`)"
+      - "traefik.http.routers.login-portal.entrypoints=websecure"
+      - "traefik.http.routers.login-portal.tls=true"
+      - "traefik.http.routers.login-portal.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.login-portal.priority=100"
+
+      # Middlewares
+      - "traefik.http.routers.login-portal.middlewares=login-stripprefix,security-headers@file,compression@file"
+
+      # Service
+      - "traefik.http.services.login-portal.loadbalancer.server.port=80"
+
+      # StripPrefix Middleware
+      - "traefik.http.middlewares.login-stripprefix.stripprefix.prefixes=/login"
+      - "traefik.http.middlewares.login-stripprefix.stripprefix.forceSlash=false"
+
+networks:
+  traefik-public:
+    external: true

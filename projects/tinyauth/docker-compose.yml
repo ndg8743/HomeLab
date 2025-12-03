@@ -9,11 +9,13 @@ services:
     security_opt:
       - no-new-privileges:true
 
+    env_file:
+      - .env
     command:
       - --app-url=https://auth.gopee.dev
-      - --secret=CHANGE_ME_TINYAUTH_SECRET
-      - --google-client-id=CHANGE_ME_GOOGLE_CLIENT_ID
-      - --google-client-secret=CHANGE_ME_GOOGLE_CLIENT_SECRET
+      - --secret=${TINYAUTH_SECRET}
+      - --google-client-id=${GOOGLE_CLIENT_ID}
+      - --google-client-secret=${GOOGLE_CLIENT_SECRET}
       - --cookie-secure=true
 
     volumes:
